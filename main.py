@@ -8,8 +8,8 @@ CORS(app)
 all_result=[]
 class Webscrapper:
     
-    @app.route('/member',methods=['POST'])
-    def hello_world(): 
+    @app.route('/website-info',methods=['POST'])
+    def website_info(): 
         data=request.get_json()
         url=data.get('title')
         response = requests.get(url)
@@ -19,6 +19,7 @@ class Webscrapper:
             web_links = [a['href'] for a in soup.find_all('a', href=True)]
             media_links = [img['src'] for img in soup.find_all('img', src=True)]
             result = {
+                "domain": url,
                 "word_count": word_count,
                 "web_links": web_links,
                 "media_links": media_links
@@ -26,9 +27,23 @@ class Webscrapper:
             all_result.append(result)
             return all_result
         else:
-            return {"kop":"alpha"}
+            return {"error":"unable to process the request right now"}
 
+
+    @app.route('/settodefault', methods=['GET'])
+    def setdefault():
+        global all_result
+        all_result=[]
+        return {"msg":"default is working fine"}
+    
+    @app.route('/delete/<int:index>', methods=['DELETE'])
+    def deleteitem(index):
+        if index < 0 or index >= len(all_result):
+            return jsonify({"error": "Invalid index"}), 400
+
+        deleted_item = all_result.pop(index)
+        return all_result,200
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
