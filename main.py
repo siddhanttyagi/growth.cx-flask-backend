@@ -25,7 +25,7 @@ class Webscrapper:
                 "media_links": media_links,
                 "favourite": "false"
             }
-            all_result.append(result)
+            all_result.insert(0, result)
             return all_result
         else:
             return {"error":"unable to process the request right now"}
