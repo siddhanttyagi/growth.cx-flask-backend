@@ -22,7 +22,8 @@ class Webscrapper:
                 "domain": url,
                 "word_count": word_count,
                 "web_links": web_links,
-                "media_links": media_links
+                "media_links": media_links,
+                "favourite": "false"
             }
             all_result.append(result)
             return all_result
@@ -42,6 +43,13 @@ class Webscrapper:
             return jsonify({"error": "Invalid index"}), 400
 
         deleted_item = all_result.pop(index)
+        return all_result,200
+    
+    @app.route('/updatefav/<int:index>', methods=['PUT'])
+    def updateitem(index):
+        if index < 0 or index >= len(all_result):
+            return jsonify({"error": "Invalid index"}), 400
+        all_result[index]["favourite"] = "true" if all_result[index]["favourite"] == "false" else "false"
         return all_result,200
 
 
